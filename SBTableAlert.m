@@ -8,7 +8,130 @@
 
 #import "SBTableAlert.h"
 #import <QuartzCore/QuartzCore.h>
-#import <dispatch/dispatch.h>
+
+@implementation SBTableView
+
+@synthesize alertStyle=_alertStyle;
+
+- (void)drawRect:(CGRect)rect {
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	
+	if (_alertStyle == SBTableAlertStyleApple) {
+		// Draw background gradient
+		CGFloat colors [] = { 
+			0.922, 0.925, 0.933, 1,
+			0.749, 0.753, 0.761, 1,
+		};
+		
+		CGColorSpaceRef baseSpace = CGColorSpaceCreateDeviceRGB();
+		CGGradientRef gradient = CGGradientCreateWithColorComponents(baseSpace, colors, NULL, 2);
+		CGColorSpaceRelease(baseSpace), baseSpace = NULL;
+		
+		CGPoint startPoint = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMinY(self.bounds));
+		CGPoint endPoint = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMaxY(self.bounds));
+		
+		CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
+		CGGradientRelease(gradient), gradient = NULL;
+	}
+	
+	[super drawRect:rect];
+	
+	if (_alertStyle == SBTableAlertStyleApple) {
+		// Draw top shadow
+		// TODO: Shadow is below cells, add another view on top with shadow?
+		CGFloat colors [] = { 
+			0, 0, 0, 0.4,
+			0, 0, 0, 0,
+		};
+		
+		CGColorSpaceRef baseSpace = CGColorSpaceCreateDeviceRGB();
+		CGGradientRef gradient = CGGradientCreateWithColorComponents(baseSpace, colors, NULL, 2);
+		CGColorSpaceRelease(baseSpace), baseSpace = NULL;
+		
+		CGPoint startPoint = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMinY(self.bounds));
+		CGPoint endPoint = CGPointMake(CGRectGetMidX(self.bounds), 8);
+		
+		CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
+		CGGradientRelease(gradient), gradient = NULL;
+	}
+}
+
+@end
+
+@interface SBTableAlertCellContentView : UIView
+@end
+
+@implementation SBTableAlertCellContentView
+- (void)drawRect:(CGRect)r {
+	[(SBTableAlertCell *)[[self superview] superview] drawCellContentView:r];
+}
+@end
+
+@implementation SBTableAlertCell
+
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+	if((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
+		CGRect frame = CGRectMake(0.0, 0.0, self.contentView.bounds.size.width, self.contentView.bounds.size.height);
+		
+		_cellContentView = [[SBTableAlertCellContentView alloc] initWithFrame:frame];
+		[_cellContentView setBackgroundColor:[UIColor clearColor]];
+		[_cellContentView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+		[self.contentView addSubview:_cellContentView];
+		[self.contentView bringSubviewToFront:_cellContentView];
+		[_cellContentView release];
+		
+		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification object:nil queue:nil usingBlock:^(NSNotification *not) {
+			[self setNeedsDisplay];
+		}];
+	}
+	return self;
+}
+
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[super dealloc];
+}
+
+- (void)layoutSubviews {
+	[super layoutSubviews];
+	
+	float editingOffset = 0.;
+	if (self.editing)
+		editingOffset = -self.contentView.frame.origin.x;
+	
+	_cellContentView.frame = CGRectMake(editingOffset,
+																			_cellContentView.frame.origin.y,
+																			self.frame.size.width - editingOffset,
+																			_cellContentView.frame.size.height);
+	
+	[self.textLabel setBackgroundColor:[UIColor clearColor]];
+	[self.detailTextLabel setBackgroundColor:[UIColor clearColor]];
+	[self setBackgroundColor:[UIColor clearColor]];
+	
+	[self setNeedsDisplay];
+}
+
+- (void)setNeedsDisplay {
+	[super setNeedsDisplay];
+	[_cellContentView setNeedsDisplay];
+}
+
+- (void)drawCellContentView:(CGRect)r {
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	CGContextSetLineWidth(context, 1.5);
+		
+	[[UIColor colorWithWhite:1 alpha:0.8] set];
+	CGContextMoveToPoint(context, 0, 0);
+	CGContextAddLineToPoint(context, self.bounds.size.width, 0);
+	CGContextStrokePath(context);
+		
+	[[UIColor colorWithWhite:0 alpha:0.35] set];
+	CGContextMoveToPoint(context, 0, self.bounds.size.height);
+	CGContextAddLineToPoint(context, self.bounds.size.width, self.bounds.size.height);
+	CGContextStrokePath(context);
+}
+
+@end
 
 @interface SBTableAlert ()
 
@@ -23,6 +146,7 @@
 @synthesize view=_alertView;
 @synthesize tableView=_tableView;
 @synthesize type=_type;
+@synthesize style=_style;
 @synthesize delegate=_delegate;
 @synthesize dataSource=_dataSource;
 
@@ -33,13 +157,15 @@
 		
 		_alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelTitle otherButtonTitles:nil];
 		
-		_tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+		_tableView = [[SBTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
 		[_tableView setDelegate:self];
 		[_tableView setDataSource:self];
-		[_tableView setBackgroundColor:[UIColor colorWithWhite:0.90 alpha:1.0]];
+		[_tableView setBackgroundColor:[UIColor whiteColor]];
 		[_tableView setRowHeight:kDefaultRowHeight];
 		[_tableView setSeparatorColor:[UIColor lightGrayColor]];
 		_tableView.layer.cornerRadius = kTableCornerRadius;
+		
+		[_alertView addSubview:_tableView];
 		
 		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification object:nil queue:nil usingBlock:^(NSNotification *n) {
 			dispatch_after(DISPATCH_TIME_NOW, dispatch_get_main_queue(), ^{[self layout];});
@@ -105,7 +231,10 @@
 	else
 		[_tableView setFrame:CGRectMake(12, 50, _alertView.frame.size.width - 24, (_tableView.rowHeight * visibleRows))];
 	
-	[_alertView addSubview:_tableView];
+	if (_style == SBTableAlertStyleApple) {
+		[_tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+		[_tableView setAlertStyle:SBTableAlertStyleApple];
+	}
 }
 
 #pragma mark -
@@ -148,7 +277,9 @@
 }
 
 - (void)willPresentAlertView:(UIAlertView *)alertView {
-	[self layout];
+	if (!_presented)
+		[self layout];
+	_presented = YES;
 	if ([_delegate respondsToSelector:@selector(willPresentTableAlert:)])
 		[_delegate willPresentTableAlert:self];
 }

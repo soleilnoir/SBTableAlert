@@ -8,6 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
+#define kNumMaximumVisibleRowsInTableView 4
+#define kDefaultRowHeight 40.0
+#define kTableCornerRadius 5
+
+typedef enum {
+	SBTableAlertTypeSingleSelect, // dismiss alert with button index -1 and animated (default)
+	SBTableAlertTypeMultipleSelct, // dismiss handled by user eg. [alert.view dismiss...];
+} SBTableAlertType;
+
+typedef enum {
+	SBTableAlertStylePlain, // plain white BG and clear FG
+	SBTableAlertStyleApple, // same style as apple in the alertView for slecting wifi-network (Use SBTableAlertCell)
+} SBTableAlertStyle;
+
 @class SBTableAlert;
 
 @protocol SBTableAlertDelegate <NSObject>
@@ -26,7 +40,6 @@
 
 @end
 
-
 @protocol SBTableAlertDataSource <NSObject>
 @required
 
@@ -35,20 +48,28 @@
 
 @end
 
-#define kNumMaximumVisibleRowsInTableView 4
-#define kDefaultRowHeight 40.0
-#define kTableCornerRadius 5
+@interface SBTableView : UITableView {
+	SBTableAlertStyle _alertStyle;
+}
+@property (nonatomic) SBTableAlertStyle alertStyle;
+@end
 
-typedef enum {
-	SBTableAlertTypeSingleSelect, // dismiss alert with button index -1 and animated (default)
-	SBTableAlertTypeMultipleSelct, // dismiss handled by user eg. [alert.view dismiss...];
-} SBTableAlertType;
+@class SBTableAlertCellContentView;
+
+@interface SBTableAlertCell : UITableViewCell {
+	SBTableAlertCellContentView *_cellContentView;
+}
+- (void)drawCellContentView:(CGRect)r;
+@end
 
 @interface SBTableAlert : NSObject <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate> {
 	UIAlertView *_alertView;
-	UITableView *_tableView;
+	SBTableView *_tableView;
 	
 	SBTableAlertType _type;
+	SBTableAlertStyle _style;
+	
+	BOOL _presented;
 	
 	id <SBTableAlertDelegate> _delegate;
 	id <SBTableAlertDataSource> _dataSource;
@@ -57,6 +78,7 @@ typedef enum {
 @property (nonatomic, retain) UIAlertView *view;
 @property (nonatomic, retain) UITableView *tableView;
 @property (nonatomic) SBTableAlertType type;
+@property (nonatomic) SBTableAlertStyle style;
 
 @property (nonatomic, assign) id <SBTableAlertDelegate> delegate;
 @property (nonatomic, assign) id <SBTableAlertDataSource> dataSource;

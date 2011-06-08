@@ -50,7 +50,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return 2;
+	return 3;
 }
 
 // Customize the appearance of table view cells.
@@ -59,14 +59,15 @@
     static NSString *CellIdentifier = @"Cell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if (cell == nil) {
+    if (cell == nil)
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
-    }
 
-	if ([indexPath row])
+	if ([indexPath row] == 1)
 		[cell.textLabel setText:@"Single Select"];
-	else
+	else if ([indexPath row] == 0)
 		[cell.textLabel setText:@"Multiple Select"];
+	else if ([indexPath row] == 2)
+		[cell.textLabel setText:@"Apple Style"];
 		
     return cell;
 }
@@ -74,12 +75,18 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	SBTableAlert *alert;
-	if ([indexPath row]) {
+	if ([indexPath row] == 1) {
 		alert	= [[SBTableAlert alloc] initWithTitle:@"Single Select" cancelButtonTitle:@"Cancel" messageFormat:nil];
-	} else {
+		[alert.view setTag:1];
+	} else if ([indexPath row] == 0) {
 		alert	= [[SBTableAlert alloc] initWithTitle:@"Multiple Select" cancelButtonTitle:@"Cancel" messageFormat:@"Select multiple rows!"];
 		[alert setType:SBTableAlertTypeMultipleSelct];
 		[alert.view addButtonWithTitle:@"OK"];
+		[alert.view setTag:0];
+	} else if ([indexPath row] == 2) {
+		alert	= [[SBTableAlert alloc] initWithTitle:@"Apple Style" cancelButtonTitle:@"Cancel" messageFormat:nil];
+		[alert.view setTag:2];
+		[alert setStyle:SBTableAlertStyleApple];
 	}
 	
 	[alert setDelegate:self];
@@ -114,7 +121,14 @@
 #pragma mark - SBTableAlertDataSource
 
 - (UITableViewCell *)tableAlert:(SBTableAlert *)tableAlert cellForRow:(NSInteger)row {
-	UITableViewCell *cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil] autorelease];
+	UITableViewCell *cell;
+	
+	if (tableAlert.view.tag == 0 || tableAlert.view.tag == 1) {
+		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil] autorelease];
+	} else if (tableAlert.view.tag == 2) {
+		// Note: SBTableAlertCell
+		cell = [[[SBTableAlertCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil] autorelease];
+	}
 	
 	[cell.textLabel setText:[NSString stringWithFormat:@"Cell %i", row]];
 	
