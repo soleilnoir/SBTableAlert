@@ -18,7 +18,7 @@ typedef enum {
 } SBTableAlertType;
 
 typedef enum {
-	SBTableAlertStylePlain, // plain white BG and clear FG
+	SBTableAlertStylePlain, // plain white BG and clear FG (default)
 	SBTableAlertStyleApple, // same style as apple in the alertView for slecting wifi-network (Use SBTableAlertCell)
 } SBTableAlertStyle;
 
@@ -48,12 +48,6 @@ typedef enum {
 
 @end
 
-@interface SBTableView : UITableView {
-	SBTableAlertStyle _alertStyle;
-}
-@property (nonatomic) SBTableAlertStyle alertStyle;
-@end
-
 @class SBTableAlertCellContentView;
 
 @interface SBTableAlertCell : UITableViewCell {
@@ -62,12 +56,17 @@ typedef enum {
 - (void)drawCellContentView:(CGRect)r;
 @end
 
+@class SBTableViewTopShadowView;
+@class SBTableView;
+
 @interface SBTableAlert : NSObject <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate> {
 	UIAlertView *_alertView;
 	SBTableView *_tableView;
 	
 	SBTableAlertType _type;
 	SBTableAlertStyle _style;
+	
+	SBTableViewTopShadowView *_shadow;
 	
 	BOOL _presented;
 	

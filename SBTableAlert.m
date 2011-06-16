@@ -9,6 +9,41 @@
 #import "SBTableAlert.h"
 #import <QuartzCore/QuartzCore.h>
 
+@interface SBTableViewTopShadowView : UIView {}
+@end
+
+@implementation SBTableViewTopShadowView
+
+- (void)drawRect:(CGRect)rect {
+	[super drawRect:rect];
+	
+	CGContextRef context = UIGraphicsGetCurrentContext();
+
+	// Draw top shadow
+	CGFloat colors [] = { 
+		0, 0, 0, 0.4,
+		0, 0, 0, 0,
+	};
+	
+	CGColorSpaceRef baseSpace = CGColorSpaceCreateDeviceRGB();
+	CGGradientRef gradient = CGGradientCreateWithColorComponents(baseSpace, colors, NULL, 2);
+	CGColorSpaceRelease(baseSpace), baseSpace = NULL;
+	
+	CGPoint startPoint = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMinY(self.bounds));
+	CGPoint endPoint = CGPointMake(CGRectGetMidX(self.bounds), 8);
+	
+	CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
+	CGGradientRelease(gradient), gradient = NULL;
+}
+
+@end
+
+@interface SBTableView : UITableView {
+	SBTableAlertStyle _alertStyle;
+}
+@property (nonatomic) SBTableAlertStyle alertStyle;
+@end
+
 @implementation SBTableView
 
 @synthesize alertStyle=_alertStyle;
@@ -35,25 +70,6 @@
 	}
 	
 	[super drawRect:rect];
-	
-	if (_alertStyle == SBTableAlertStyleApple) {
-		// Draw top shadow
-		// TODO: Shadow is below cells, add another view on top with shadow?
-		CGFloat colors [] = { 
-			0, 0, 0, 0.4,
-			0, 0, 0, 0,
-		};
-		
-		CGColorSpaceRef baseSpace = CGColorSpaceCreateDeviceRGB();
-		CGGradientRef gradient = CGGradientCreateWithColorComponents(baseSpace, colors, NULL, 2);
-		CGColorSpaceRelease(baseSpace), baseSpace = NULL;
-		
-		CGPoint startPoint = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMinY(self.bounds));
-		CGPoint endPoint = CGPointMake(CGRectGetMidX(self.bounds), 8);
-		
-		CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
-		CGGradientRelease(gradient), gradient = NULL;
-	}
 }
 
 @end
@@ -167,6 +183,13 @@
 		
 		[_alertView addSubview:_tableView];
 		
+		_shadow = [[SBTableViewTopShadowView alloc] initWithFrame:CGRectZero];
+		[_shadow setBackgroundColor:[UIColor clearColor]];
+		[_shadow setHidden:YES];
+		
+		[_alertView addSubview:_shadow];
+		[_alertView bringSubviewToFront:_shadow];
+		
 		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification object:nil queue:nil usingBlock:^(NSNotification *n) {
 			dispatch_after(DISPATCH_TIME_NOW, dispatch_get_main_queue(), ^{[self layout];});
 		}];
@@ -187,6 +210,8 @@
 	[self setTableView:nil];
 	[self setView:nil];
 	
+	[_shadow release], _shadow = nil;
+	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
 	[super dealloc];
@@ -197,6 +222,21 @@
 - (void)show {
 	[_tableView reloadData];
 	[_alertView show];
+}
+
+#pragma mark - Properties
+
+- (void)setStyle:(SBTableAlertStyle)style {
+	if (style == SBTableAlertStyleApple) {
+		[_tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+		[_tableView setAlertStyle:SBTableAlertStyleApple];
+		[_shadow setHidden:NO];
+	} else if (style == SBTableAlertStylePlain) {
+		[_tableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
+		[_tableView setAlertStyle:SBTableAlertStylePlain];
+		[_shadow setHidden:YES];
+	}
+	_style = style;
 }
 
 #pragma mark - Private
@@ -231,10 +271,7 @@
 	else
 		[_tableView setFrame:CGRectMake(12, 50, _alertView.frame.size.width - 24, (_tableView.rowHeight * visibleRows))];
 	
-	if (_style == SBTableAlertStyleApple) {
-		[_tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-		[_tableView setAlertStyle:SBTableAlertStyleApple];
-	}
+	[_shadow setFrame:CGRectMake(_tableView.frame.origin.x, _tableView.frame.origin.y, _tableView.frame.size.width, 8)];
 }
 
 #pragma mark -
