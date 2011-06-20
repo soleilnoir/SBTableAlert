@@ -330,6 +330,7 @@
 		[_delegate tableAlert:self willDismissWithButtonIndex:buttonIndex];
 }
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+	_presented = NO;
 	if ([_delegate respondsToSelector:@selector(tableAlert:didDismissWithButtonIndex:)])
 		[_delegate tableAlert:self didDismissWithButtonIndex:buttonIndex];
 }
