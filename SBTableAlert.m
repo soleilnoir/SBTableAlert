@@ -290,12 +290,16 @@
 		visibleRows = kNumMaximumVisibleRowsInTableView;
 	
 	[self increaseHeightBy:(_tableView.rowHeight * visibleRows)];
-	if ([_alertView message])
-		[_tableView setFrame:CGRectMake(12, 75, _alertView.frame.size.width - 24, (_tableView.rowHeight * visibleRows))];
-	else
-		[_tableView setFrame:CGRectMake(12, 50, _alertView.frame.size.width - 24, (_tableView.rowHeight * visibleRows))];
 	
-	[_shadow setFrame:CGRectMake(_tableView.frame.origin.x, _tableView.frame.origin.y, _tableView.frame.size.width, 8)];
+	[_tableView setFrame:CGRectMake(12,
+																	_alertView.frame.size.height-(_tableView.rowHeight * visibleRows)-65,
+																	_alertView.frame.size.width - 24,
+																	(_tableView.rowHeight * visibleRows))];
+	
+	[_shadow setFrame:CGRectMake(_tableView.frame.origin.x,
+															 _tableView.frame.origin.y,
+															 _tableView.frame.size.width,
+															 8)];
 }
 
 #pragma mark -
