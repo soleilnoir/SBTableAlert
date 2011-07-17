@@ -363,12 +363,19 @@
 #pragma mark -
 #pragma mark UITableViewDelegate
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([_delegate respondsToSelector:@selector(tableAlert:heightForRowAtIndexPath:)]) {
+        return [_delegate tableAlert:self heightForRowAtIndexPath:indexPath];
+    }
+    return _tableView.rowHeight;
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (_type == SBTableAlertTypeSingleSelect)
 		[_alertView dismissWithClickedButtonIndex:-1 animated:YES];
 	
-	if ([_delegate respondsToSelector:@selector(tableAlert:didSelectRow:)])
-		[_delegate tableAlert:self didSelectRow:[indexPath row]];
+	if ([_delegate respondsToSelector:@selector(tableAlert:didSelectRowAtIndexPath:)])
+		[_delegate tableAlert:self didSelectRowAtIndexPath:indexPath];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {

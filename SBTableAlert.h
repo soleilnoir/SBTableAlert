@@ -62,7 +62,9 @@ typedef enum {
 @protocol SBTableAlertDelegate <NSObject>
 @optional
 
-- (void)tableAlert:(SBTableAlert *)tableAlert didSelectRow:(NSInteger)row;
+- (CGFloat)tableAlert:(SBTableAlert *)tableAlert heightForRowAtIndexPath:(NSIndexPath *)indexPath;
+
+- (void)tableAlert:(SBTableAlert *)tableAlert didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 - (void)tableAlertCancel:(SBTableAlert *)tableAlert;
 
 - (void)tableAlert:(SBTableAlert *)tableAlert clickedButtonAtIndex:(NSInteger)buttonIndex;
