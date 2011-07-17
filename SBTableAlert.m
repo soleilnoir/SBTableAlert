@@ -374,8 +374,8 @@
 	if (_type == SBTableAlertTypeSingleSelect)
 		[_alertView dismissWithClickedButtonIndex:-1 animated:YES];
 	
-	if ([_delegate respondsToSelector:@selector(tableAlert:didSelectRow:)])
-		[_delegate tableAlert:self didSelectRow:[indexPath row]];
+	if ([_delegate respondsToSelector:@selector(tableAlert:didSelectRowAtIndexPath:)])
+		[_delegate tableAlert:self didSelectRowAtIndexPath:indexPath];
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {

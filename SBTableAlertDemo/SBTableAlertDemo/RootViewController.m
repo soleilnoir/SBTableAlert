@@ -158,15 +158,15 @@
 
 #pragma mark - SBTableAlertDelegate
 
-- (void)tableAlert:(SBTableAlert *)tableAlert didSelectRow:(NSInteger)row {
+- (void)tableAlert:(SBTableAlert *)tableAlert didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (tableAlert.type == SBTableAlertTypeMultipleSelct) {
-		UITableViewCell *cell = [tableAlert.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0]];
+		UITableViewCell *cell = [tableAlert.tableView cellForRowAtIndexPath:indexPath];
 		if (cell.accessoryType == UITableViewCellAccessoryNone)
 			[cell setAccessoryType:UITableViewCellAccessoryCheckmark];
 		else
 			[cell setAccessoryType:UITableViewCellAccessoryNone];
 		
-		[tableAlert.tableView deselectRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:0] animated:YES];
+		[tableAlert.tableView deselectRowAtIndexPath:indexPath animated:YES];
 	}
 }
 
