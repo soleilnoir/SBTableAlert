@@ -119,7 +119,7 @@ typedef enum {
 @property (nonatomic, retain) UITableView *tableView;
 @property (nonatomic) SBTableAlertType type;
 @property (nonatomic) SBTableAlertStyle style;
-@property (nonatomic) NSInteger maximumVisibleRows; // default 4, (nice in both orientations w/ rowHeigh == 40)
+@property (nonatomic) NSInteger maximumVisibleRows; // default 4, (nice in both orientations w/ rowHeigh == 40), if -1 is passed it will display the whole table.
 @property (nonatomic) CGFloat rowHeight; // default 40, (default in UITableView == 44)
 
 @property (nonatomic, assign) id <SBTableAlertDelegate> delegate;

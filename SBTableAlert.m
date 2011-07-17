@@ -343,20 +343,32 @@
 
 
 - (void)layout {
-	// todo: fix height calulations according to cell height + header height
-	NSInteger visibleRows = 0;
-	for (NSInteger section = 0; section < [_tableView numberOfSections]; section++)
-		visibleRows += [_tableView numberOfRowsInSection:section];
+	// todo: calculate if it's too large
 	
-	if (visibleRows > _maximumVisibleRows)
-		visibleRows = _maximumVisibleRows;
+	CGFloat height = 0.;
+	NSInteger rows = 0;
+	for (NSInteger section = 0; section < [_tableView numberOfSections]; section++) {
+		for (NSInteger row = 0; row < [_tableView numberOfRowsInSection:section]; row++) {
+			height += [_tableViewDelegate tableView:_tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
+			rows ++;
+		}
+	}
 	
-	[self increaseHeightBy:(_tableView.rowHeight * visibleRows)];
+	CGFloat avgRowHeight = height / rows;
+	CGFloat resultHeigh;
+	
+	if (_maximumVisibleRows == -1 || rows <= _maximumVisibleRows)
+		resultHeigh = _tableView.contentSize.height;
+	else
+		resultHeigh = (avgRowHeight * _maximumVisibleRows);
+	
+	[self increaseHeightBy:resultHeigh];
+	
 	
 	[_tableView setFrame:CGRectMake(12,
-																	_alertView.frame.size.height-(_tableView.rowHeight * visibleRows)-65,
+																	_alertView.frame.size.height - resultHeigh - 65,
 																	_alertView.frame.size.width - 24,
-																	(_tableView.rowHeight * visibleRows))];
+																	resultHeigh)];
 	
 	[_shadow setFrame:CGRectMake(_tableView.frame.origin.x,
 															 _tableView.frame.origin.y,
