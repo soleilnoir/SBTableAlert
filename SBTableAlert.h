@@ -130,6 +130,7 @@ typedef enum {
 @property (nonatomic, assign) id <UIAlertViewDelegate> alertViewDelegate; // default self, (set other for more advanded use)
 
 - (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelTitle messageFormat:(NSString *)message, ...;
++ (id)alertWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelTitle messageFormat:(NSString *)message, ...;
 
 - (void)show;
 

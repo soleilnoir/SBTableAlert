@@ -285,6 +285,10 @@
 	return self;
 }
 
++ (id)alertWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelTitle messageFormat:(NSString *)message, ... {
+	return [[[SBTableAlert alloc] initWithTitle:title cancelButtonTitle:cancelTitle messageFormat:message] autorelease];
+}
+
 - (void)dealloc {
 	[self setTableView:nil];
 	[self setView:nil];
@@ -364,9 +368,9 @@
 #pragma mark UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([_delegate respondsToSelector:@selector(tableAlert:heightForRowAtIndexPath:)]) {
+    if ([_delegate respondsToSelector:@selector(tableAlert:heightForRowAtIndexPath:)])
         return [_delegate tableAlert:self heightForRowAtIndexPath:indexPath];
-    }
+
     return _tableView.rowHeight;
 }
 
@@ -384,10 +388,10 @@
 		if (!title)
 			return nil;
 		
-		SBTableViewSectionHeaderView *view = [[[SBTableViewSectionHeaderView alloc] initWithTitle:title] autorelease];
-		return view;
-	} else
-		return nil;
+		return [[[SBTableViewSectionHeaderView alloc] initWithTitle:title] autorelease];
+	}
+
+	return nil;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
@@ -408,8 +412,8 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	if ([_dataSource respondsToSelector:@selector(numberOfSectionsInTableAlert:)])
 		return [_dataSource numberOfSectionsInTableAlert:self];
-	else
-		return 1;
+
+	return 1;
 }
 
 #pragma mark -
