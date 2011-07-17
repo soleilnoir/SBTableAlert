@@ -30,9 +30,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define kNumMaximumVisibleRowsInTableView 4
-#define kDefaultRowHeight 40.0
-#define kTableCornerRadius 5
+#define kTableCornerRadius 5.
 
 typedef enum {
 	SBTableAlertTypeSingleSelect, // dismiss alert with button index -1 and animated (default)
@@ -43,6 +41,21 @@ typedef enum {
 	SBTableAlertStylePlain, // plain white BG and clear FG (default)
 	SBTableAlertStyleApple, // same style as apple in the alertView for slecting wifi-network (Use SBTableAlertCell)
 } SBTableAlertStyle;
+
+// use this class if you would like to use the fance section headers by yourself
+@interface SBTableViewSectionHeaderView : UIView {
+	NSString *_title;
+}
+@property (nonatomic, copy) NSString *title;
+@end
+
+@class SBTableAlertCellContentView;
+
+@interface SBTableAlertCell : UITableViewCell {
+	SBTableAlertCellContentView *_cellContentView;
+}
+- (void)drawCellContentView:(CGRect)r;
+@end
 
 @class SBTableAlert;
 
@@ -65,17 +78,14 @@ typedef enum {
 @protocol SBTableAlertDataSource <NSObject>
 @required
 
-- (UITableViewCell *)tableAlert:(SBTableAlert *)tableAlert cellForRow:(NSInteger)row;
-- (NSInteger)numberOfRowsInTableAlert:(SBTableAlert *)tableAlert;
+- (UITableViewCell *)tableAlert:(SBTableAlert *)tableAlert cellForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (NSInteger)tableAlert:(SBTableAlert *)tableAlert numberOfRowsInSection:(NSInteger)section;
 
-@end
+@optional
 
-@class SBTableAlertCellContentView;
+- (NSInteger)numberOfSectionsInTableAlert:(SBTableAlert *)tableAlert; // default 1
+- (NSString *)tableAlert:(SBTableAlert *)tableAlert titleForHeaderInSection:(NSInteger)section;
 
-@interface SBTableAlertCell : UITableViewCell {
-	SBTableAlertCellContentView *_cellContentView;
-}
-- (void)drawCellContentView:(CGRect)r;
 @end
 
 @class SBTableViewTopShadowView;
@@ -88,21 +98,34 @@ typedef enum {
 	SBTableAlertType _type;
 	SBTableAlertStyle _style;
 	
+	NSInteger _maximumVisibleRows;
+	CGFloat _rowHeigh;
+	
 	SBTableViewTopShadowView *_shadow;
 	
 	BOOL _presented;
 	
 	id <SBTableAlertDelegate> _delegate;
 	id <SBTableAlertDataSource> _dataSource;
+	
+	id <UITableViewDelegate> _tableViewDelegate;
+	id <UITableViewDataSource> _tableViewDataSource;
+	id <UIAlertViewDelegate> _alertViewDelegate;
 }
 
 @property (nonatomic, retain) UIAlertView *view;
 @property (nonatomic, retain) UITableView *tableView;
 @property (nonatomic) SBTableAlertType type;
 @property (nonatomic) SBTableAlertStyle style;
+@property (nonatomic) NSInteger maximumVisibleRows; // default 4, (nice in both orientations w/ rowHeigh == 40)
+@property (nonatomic) CGFloat rowHeight; // default 40, (default in UITableView == 44)
 
 @property (nonatomic, assign) id <SBTableAlertDelegate> delegate;
 @property (nonatomic, assign) id <SBTableAlertDataSource> dataSource;
+
+@property (nonatomic, assign) id <UITableViewDelegate> tableViewDelegate; // default self, (set other for more advanded use)
+@property (nonatomic, assign) id <UITableViewDataSource> tableViewDataSource; // default self, (set other for more advanded use)
+@property (nonatomic, assign) id <UIAlertViewDelegate> alertViewDelegate; // default self, (set other for more advanded use)
 
 - (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelTitle messageFormat:(NSString *)message, ...;
 

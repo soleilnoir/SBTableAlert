@@ -5,7 +5,9 @@
 * Multiple and single selection of cells.
 * Supports orientation change.
 * Easy to customize, access UITableView and UIAlertView via properties.
-* Optional "Apple styled"
+* Optional "Apple styled".
+* Use all UITableView UIAlertView data source / delegate methods by setting the tableViewDelegate, tableViewDataSource and alertViewDelegate properties.
+* Supports sections and custom section headers.
 
 ## License
 SBTableAlert is released under the MIT-license (see the LICENSE file)

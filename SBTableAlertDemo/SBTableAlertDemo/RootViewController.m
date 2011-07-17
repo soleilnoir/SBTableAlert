@@ -42,15 +42,9 @@
 	return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
-// Customize the number of sections in the table view.
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-	return 1;
-}
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	return 3;
+	return 4;
 }
 
 // Customize the appearance of table view cells.
@@ -68,6 +62,8 @@
 		[cell.textLabel setText:@"Multiple Select"];
 	else if ([indexPath row] == 2)
 		[cell.textLabel setText:@"Apple Style"];
+	else if ([indexPath row] == 3)
+		[cell.textLabel setText:@"Sections"];
 		
     return cell;
 }
@@ -87,6 +83,10 @@
 		alert	= [[SBTableAlert alloc] initWithTitle:@"Apple Style" cancelButtonTitle:@"Cancel" messageFormat:nil];
 		[alert.view setTag:2];
 		[alert setStyle:SBTableAlertStyleApple];
+	} else if ([indexPath row] == 3) {
+		alert	= [[SBTableAlert alloc] initWithTitle:@"Sections" cancelButtonTitle:@"Cancel" messageFormat:@"+ Apple styled table view."];
+		[alert setStyle:SBTableAlertStyleApple];
+		[alert.view setTag:3];
 	}
 	
 	[alert setDelegate:self];
@@ -120,26 +120,40 @@
 
 #pragma mark - SBTableAlertDataSource
 
-- (UITableViewCell *)tableAlert:(SBTableAlert *)tableAlert cellForRow:(NSInteger)row {
+- (UITableViewCell *)tableAlert:(SBTableAlert *)tableAlert cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	UITableViewCell *cell;
 	
 	if (tableAlert.view.tag == 0 || tableAlert.view.tag == 1) {
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil] autorelease];
-	} else if (tableAlert.view.tag == 2) {
+	} else if (tableAlert.view.tag == 2 || tableAlert.view.tag == 3) {
 		// Note: SBTableAlertCell
 		cell = [[[SBTableAlertCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil] autorelease];
 	}
 	
-	[cell.textLabel setText:[NSString stringWithFormat:@"Cell %i", row]];
+	[cell.textLabel setText:[NSString stringWithFormat:@"Cell %d", indexPath.row]];
 	
 	return cell;
 }
 
-- (NSInteger)numberOfRowsInTableAlert:(SBTableAlert *)tableAlert {
+- (NSInteger)tableAlert:(SBTableAlert *)tableAlert numberOfRowsInSection:(NSInteger)section {
 	if (tableAlert.type == SBTableAlertTypeSingleSelect)
 		return 3;
 	else
 		return 10;
+}
+
+- (NSInteger)numberOfSectionsInTableAlert:(SBTableAlert *)tableAlert {
+	if (tableAlert.view.tag == 3)
+		return 2;
+	else
+		return 1;
+}
+
+- (NSString *)tableAlert:(SBTableAlert *)tableAlert titleForHeaderInSection:(NSInteger)section {
+	if (tableAlert.view.tag == 3)
+		return [NSString stringWithFormat:@"Section Header %d", section];
+	else
+		return nil;
 }
 
 #pragma mark - SBTableAlertDelegate
@@ -161,5 +175,7 @@
 	
 	[tableAlert release];
 }
+
+
 
 @end
