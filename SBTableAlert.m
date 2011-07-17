@@ -129,8 +129,10 @@
 	
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	
+	[[UIColor colorWithWhite:0 alpha:0.8] set];
+	[_title drawAtPoint:CGPointMake(10, 4) withFont:[UIFont boldSystemFontOfSize:12]];	
 	[[UIColor whiteColor] set];
-	[_title drawAtPoint:CGPointMake(5, 5) withFont:[UIFont boldSystemFontOfSize:12]];
+	[_title drawAtPoint:CGPointMake(10, 5) withFont:[UIFont boldSystemFontOfSize:12]];
 	
 	CGContextSetLineWidth(context, 1.5);
 	
