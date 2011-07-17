@@ -228,7 +228,7 @@
 @synthesize type=_type;
 @synthesize style=_style;
 @synthesize maximumVisibleRows=_maximumVisibleRows;
-@synthesize rowHeight=_rowHeigh;
+@synthesize rowHeight=_rowHeight;
 
 @synthesize delegate=_delegate;
 @synthesize dataSource=_dataSource;
@@ -246,7 +246,7 @@
 		_alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:_alertViewDelegate cancelButtonTitle:cancelTitle otherButtonTitles:nil];
 		
 		_maximumVisibleRows = 4;
-		_rowHeigh = 40.;
+		_rowHeight = 40.;
 		_tableViewDelegate = self;
 		_tableViewDataSource = self;
 		_tableView = [[SBTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
@@ -254,7 +254,7 @@
 		[_tableView setDelegate:_tableViewDelegate];
 		[_tableView setDataSource:_tableViewDataSource];
 		[_tableView setBackgroundColor:[UIColor whiteColor]];
-		[_tableView setRowHeight:_rowHeigh];
+		[_tableView setRowHeight:_rowHeight];
 		[_tableView setSeparatorColor:[UIColor lightGrayColor]];
 		[_tableView.layer setCornerRadius:kTableCornerRadius];
 		
@@ -383,7 +383,7 @@
     if ([_delegate respondsToSelector:@selector(tableAlert:heightForRowAtIndexPath:)])
         return [_delegate tableAlert:self heightForRowAtIndexPath:indexPath];
 
-    return _tableView.rowHeight;
+    return _rowHeight;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

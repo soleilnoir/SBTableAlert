@@ -101,7 +101,7 @@ typedef enum {
 	SBTableAlertStyle _style;
 	
 	NSInteger _maximumVisibleRows;
-	CGFloat _rowHeigh;
+	CGFloat _rowHeight;
 	
 	SBTableViewTopShadowView *_shadow;
 	
