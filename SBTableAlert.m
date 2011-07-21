@@ -111,7 +111,7 @@
 @synthesize title=_title;
 
 - (id)initWithTitle:(NSString *)title {
-	if ((self == [super initWithFrame:CGRectZero])) {
+	if ((self = [super initWithFrame:CGRectZero])) {
 		[self setTitle:title];
 		[self setBackgroundColor:[UIColor colorWithRed:0.165 green:0.224 blue:0.376 alpha:0.85]];
 	}
