@@ -409,7 +409,11 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-	return 25;
+	if ([self tableView:tableView viewForHeaderInSection:section]) {
+		return 25;
+	} else {
+		return 0;
+	}
 }
 
 #pragma mark -
