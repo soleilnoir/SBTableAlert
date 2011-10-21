@@ -43,17 +43,13 @@ typedef enum {
 } SBTableAlertStyle;
 
 // use this class if you would like to use the fance section headers by yourself
-@interface SBTableViewSectionHeaderView : UIView {
-	NSString *_title;
-}
+@interface SBTableViewSectionHeaderView : UIView {}
 @property (nonatomic, copy) NSString *title;
 @end
 
 @class SBTableAlertCellContentView;
 
-@interface SBTableAlertCell : UITableViewCell {
-	SBTableAlertCellContentView *_cellContentView;
-}
+@interface SBTableAlertCell : UITableViewCell {}
 - (void)drawCellContentView:(CGRect)r;
 @end
 
@@ -90,30 +86,7 @@ typedef enum {
 
 @end
 
-@class SBTableViewTopShadowView;
-@class SBTableView;
-
-@interface SBTableAlert : NSObject <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate> {
-	UIAlertView *_alertView;
-	SBTableView *_tableView;
-	
-	SBTableAlertType _type;
-	SBTableAlertStyle _style;
-	
-	NSInteger _maximumVisibleRows;
-	CGFloat _rowHeight;
-	
-	SBTableViewTopShadowView *_shadow;
-	
-	BOOL _presented;
-	
-	id <SBTableAlertDelegate> _delegate;
-	id <SBTableAlertDataSource> _dataSource;
-	
-	id <UITableViewDelegate> _tableViewDelegate;
-	id <UITableViewDataSource> _tableViewDataSource;
-	id <UIAlertViewDelegate> _alertViewDelegate;
-}
+@interface SBTableAlert : NSObject <UITableViewDelegate, UITableViewDataSource, UIAlertViewDelegate> {}
 
 @property (nonatomic, retain) UIAlertView *view;
 @property (nonatomic, retain) UITableView *tableView;

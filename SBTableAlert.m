@@ -60,9 +60,7 @@
 
 @end
 
-@interface SBTableView : UITableView {
-	SBTableAlertStyle _alertStyle;
-}
+@interface SBTableView : UITableView {}
 @property (nonatomic) SBTableAlertStyle alertStyle;
 @end
 
@@ -149,7 +147,12 @@
 
 @end
 
+@interface SBTableAlertCell ()
+@property (nonatomic, retain) SBTableAlertCellContentView *cellContentView;
+@end
+
 @implementation SBTableAlertCell
+@synthesize cellContentView = _cellContentView;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
@@ -162,9 +165,7 @@
 		[self.contentView bringSubviewToFront:_cellContentView];
 		[_cellContentView release];
 		
-		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification object:nil queue:nil usingBlock:^(NSNotification *not) {
-			[self setNeedsDisplay];
-		}];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setNeedsDisplay) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
 	}
 	return self;
 }
@@ -216,6 +217,8 @@
 @end
 
 @interface SBTableAlert ()
+@property (nonatomic, retain) SBTableViewTopShadowView *shadow;
+@property (nonatomic, assign) BOOL presented;
 
 - (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelTitle messageFormat:(NSString *)format args:(va_list)args;
 - (void)increaseHeightBy:(CGFloat)delta;
@@ -239,6 +242,8 @@
 @synthesize tableViewDataSource=_tableViewDataSource;
 @synthesize alertViewDelegate=_alertViewDelegate;
 
+@synthesize shadow = _shadow;
+@synthesize presented = _presented;
 
 - (id)initWithTitle:(NSString *)title cancelButtonTitle:(NSString *)cancelTitle messageFormat:(NSString *)format args:(va_list)args {
 	if ((self = [super init])) {
@@ -295,7 +300,7 @@
 	[self setTableView:nil];
 	[self setView:nil];
 	
-	[_shadow release], _shadow = nil;
+	[self setShadow:nil];
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	
@@ -314,11 +319,11 @@
 - (void)setStyle:(SBTableAlertStyle)style {
 	if (style == SBTableAlertStyleApple) {
 		[_tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-		[_tableView setAlertStyle:SBTableAlertStyleApple];
+		[(SBTableView *)_tableView setAlertStyle:SBTableAlertStyleApple];
 		[_shadow setHidden:NO];
 	} else if (style == SBTableAlertStylePlain) {
 		[_tableView setSeparatorStyle:UITableViewCellSeparatorStyleSingleLine];
-		[_tableView setAlertStyle:SBTableAlertStylePlain];
+		[(SBTableView *)_tableView setAlertStyle:SBTableAlertStylePlain];
 		[_shadow setHidden:YES];
 	}
 	_style = style;
