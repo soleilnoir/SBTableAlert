@@ -94,13 +94,13 @@
 
 @end
 
-@interface SBTableAlertCellContentView : UIView
+@interface SBTableAlertCellBackgroundView : UIView
 @end
 
-@implementation SBTableAlertCellContentView
+@implementation SBTableAlertCellBackgroundView
 
 - (void)drawRect:(CGRect)r {
-	[(SBTableAlertCell *)[[self superview] superview] drawCellContentView:r];
+	[(SBTableAlertCell *)[self superview] drawCellBackgroundView:r];
 }
 
 @end
@@ -148,22 +148,21 @@
 @end
 
 @interface SBTableAlertCell ()
-@property (nonatomic, retain) SBTableAlertCellContentView *cellContentView;
+@property (nonatomic, retain) SBTableAlertCellBackgroundView *cellBackgroundView;
 @end
 
 @implementation SBTableAlertCell
-@synthesize cellContentView = _cellContentView;
+@synthesize cellBackgroundView = _cellBackgroundView;
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	if((self = [super initWithStyle:style reuseIdentifier:reuseIdentifier])) {
 		CGRect frame = CGRectMake(0.0, 0.0, self.contentView.bounds.size.width, self.contentView.bounds.size.height);
 		
-		_cellContentView = [[SBTableAlertCellContentView alloc] initWithFrame:frame];
-		[_cellContentView setBackgroundColor:[UIColor clearColor]];
-		[_cellContentView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
-		[self.contentView addSubview:_cellContentView];
-		[self.contentView bringSubviewToFront:_cellContentView];
-		[_cellContentView release];
+		_cellBackgroundView = [[SBTableAlertCellBackgroundView alloc] initWithFrame:frame];
+		[_cellBackgroundView setBackgroundColor:[UIColor clearColor]];
+		[_cellBackgroundView setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
+		[self setBackgroundView:_cellBackgroundView];
+		[_cellBackgroundView release];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setNeedsDisplay) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
 	}
@@ -182,10 +181,10 @@
 	if (self.editing)
 		editingOffset = -self.contentView.frame.origin.x;
 	
-	_cellContentView.frame = CGRectMake(editingOffset,
-																			_cellContentView.frame.origin.y,
+	_cellBackgroundView.frame = CGRectMake(editingOffset,
+																			_cellBackgroundView.frame.origin.y,
 																			self.frame.size.width - editingOffset,
-																			_cellContentView.frame.size.height);
+																			_cellBackgroundView.frame.size.height);
 	
 	[self.textLabel setBackgroundColor:[UIColor clearColor]];
 	[self.detailTextLabel setBackgroundColor:[UIColor clearColor]];
@@ -196,10 +195,10 @@
 
 - (void)setNeedsDisplay {
 	[super setNeedsDisplay];
-	[_cellContentView setNeedsDisplay];
+	[_cellBackgroundView setNeedsDisplay];
 }
 
-- (void)drawCellContentView:(CGRect)r {
+- (void)drawCellBackgroundView:(CGRect)r {
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	CGContextSetLineWidth(context, 1.5);
 		

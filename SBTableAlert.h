@@ -42,15 +42,13 @@ typedef enum {
 	SBTableAlertStyleApple, // same style as apple in the alertView for slecting wifi-network (Use SBTableAlertCell)
 } SBTableAlertStyle;
 
-// use this class if you would like to use the fance section headers by yourself
+// use this class if you would like to use the custom section headers by yourself
 @interface SBTableViewSectionHeaderView : UIView {}
 @property (nonatomic, copy) NSString *title;
 @end
 
-@class SBTableAlertCellContentView;
-
 @interface SBTableAlertCell : UITableViewCell {}
-- (void)drawCellContentView:(CGRect)r;
+- (void)drawCellBackgroundView:(CGRect)r;
 @end
 
 @class SBTableAlert;
