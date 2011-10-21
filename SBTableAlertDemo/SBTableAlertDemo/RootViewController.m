@@ -83,7 +83,7 @@
 		alert	= [[SBTableAlert alloc] initWithTitle:@"Apple Style" cancelButtonTitle:@"Cancel" messageFormat:nil];
 		[alert.view setTag:2];
 		[alert setStyle:SBTableAlertStyleApple];
-	} else if ([indexPath row] == 3) {
+	} else {
 		alert	= [[SBTableAlert alloc] initWithTitle:@"Sections" cancelButtonTitle:@"Cancel" messageFormat:@"+ Apple styled table view."];
 		[alert setStyle:SBTableAlertStyleApple];
 		[alert.view setTag:3];
@@ -125,7 +125,7 @@
 	
 	if (tableAlert.view.tag == 0 || tableAlert.view.tag == 1) {
 		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil] autorelease];
-	} else if (tableAlert.view.tag == 2 || tableAlert.view.tag == 3) {
+	} else {
 		// Note: SBTableAlertCell
 		cell = [[[SBTableAlertCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil] autorelease];
 	}

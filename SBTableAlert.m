@@ -237,9 +237,9 @@
 @synthesize delegate=_delegate;
 @synthesize dataSource=_dataSource;
 
-@synthesize tableViewDelegate=_tableViewDelegate;
-@synthesize tableViewDataSource=_tableViewDataSource;
-@synthesize alertViewDelegate=_alertViewDelegate;
+@dynamic tableViewDelegate;
+@dynamic tableViewDataSource;
+@dynamic alertViewDelegate;
 
 @synthesize shadow = _shadow;
 @synthesize presented = _presented;
@@ -248,17 +248,15 @@
 	if ((self = [super init])) {
 		NSString *message = format ? [[[NSString alloc] initWithFormat:format arguments:args] autorelease] : nil;
 		
-		_alertViewDelegate = self;
-		_alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:_alertViewDelegate cancelButtonTitle:cancelTitle otherButtonTitles:nil];
+		_alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelTitle otherButtonTitles:nil];
 		
 		_maximumVisibleRows = 4;
 		_rowHeight = 40.;
-		_tableViewDelegate = self;
-		_tableViewDataSource = self;
+
 		_tableView = [[SBTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
 		
-		[_tableView setDelegate:_tableViewDelegate];
-		[_tableView setDataSource:_tableViewDataSource];
+		[_tableView setDelegate:self];
+		[_tableView setDataSource:self];
 		[_tableView setBackgroundColor:[UIColor whiteColor]];
 		[_tableView setRowHeight:_rowHeight];
 		[_tableView setSeparatorColor:[UIColor lightGrayColor]];
@@ -328,6 +326,31 @@
 	_style = style;
 }
 
+- (id<UITableViewDelegate>)tableViewDelegate {
+	return _tableView.delegate;
+}
+
+- (void)setTableViewDelegate:(id<UITableViewDelegate>)tableViewDelegate {
+	[_tableView setDelegate:tableViewDelegate];
+}
+
+- (id<UITableViewDataSource>)tableViewDataSource {
+	return _tableView.dataSource;
+}
+
+- (void)setTableViewDataSource:(id<UITableViewDataSource>)tableViewDataSource {
+	[_tableView setDataSource:tableViewDataSource];
+}
+
+- (id<UIAlertViewDelegate>)alertViewDelegate {
+	return _alertView.delegate;
+}
+
+- (void)setAlertViewDelegate:(id<UIAlertViewDelegate>)alertViewDelegate {
+	[_alertView setDelegate:alertViewDelegate];
+}
+
+
 #pragma mark - Private
 
 - (void)increaseHeightBy:(CGFloat)delta {
@@ -355,7 +378,7 @@
 	NSInteger rows = 0;
 	for (NSInteger section = 0; section < [_tableView numberOfSections]; section++) {
 		for (NSInteger row = 0; row < [_tableView numberOfRowsInSection:section]; row++) {
-			height += [_tableViewDelegate tableView:_tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
+			height += [_tableView.delegate tableView:_tableView heightForRowAtIndexPath:[NSIndexPath indexPathForRow:row inSection:section]];
 			rows ++;
 		}
 	}
