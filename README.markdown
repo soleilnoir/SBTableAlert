@@ -13,8 +13,8 @@
 SBTableAlert is released under the MIT-license (see the LICENSE file)
 
 ## Screenshots
-![Screenshot](https://github.com/simonb/SBTableAlert/raw/master/SBTableAlertDemo/Screenshots/Single.png "Single")
+![Screenshot](https://github.com/blommegard/SBTableAlert/raw/master/SBTableAlertDemo/Screenshots/Single.png "Single")
 
-![Screenshot](https://github.com/simonb/SBTableAlert/raw/master/SBTableAlertDemo/Screenshots/Multiple.png "Multiple")
+![Screenshot](https://github.com/blommegard/SBTableAlert/raw/master/SBTableAlertDemo/Screenshots/Multiple.png "Multiple")
 
-![Screenshot](https://github.com/simonb/SBTableAlert/raw/master/SBTableAlertDemo/Screenshots/Apple.png "Apple Styled")
+![Screenshot](https://github.com/blommegard/SBTableAlert/raw/master/SBTableAlertDemo/Screenshots/Apple.png "Apple Styled")
