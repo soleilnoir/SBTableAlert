@@ -372,8 +372,6 @@
 
 
 - (void)layout {
-	// todo: calculate if it's too large
-	
 	CGFloat height = 0.;
 	NSInteger rows = 0;
 	for (NSInteger section = 0; section < [_tableView numberOfSections]; section++) {
@@ -383,10 +381,17 @@
 		}
 	}
 	
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
 	CGFloat avgRowHeight = height / rows;
 	CGFloat resultHeigh;
 	
-	if (_maximumVisibleRows == -1 || rows <= _maximumVisibleRows)
+    if(height > screenRect.size.height)
+        if((UIDeviceOrientationPortrait == [UIDevice currentDevice].orientation)
+           || (UIDeviceOrientationPortraitUpsideDown == [UIDevice currentDevice].orientation))
+            resultHeigh = screenRect.size.height - _alertView.frame.size.height - 65;
+        else
+            resultHeigh = screenRect.size.width - _alertView.frame.size.height - 65;
+	else if (_maximumVisibleRows == -1 || rows <= _maximumVisibleRows)
 		resultHeigh = _tableView.contentSize.height;
 	else
 		resultHeigh = (avgRowHeight * _maximumVisibleRows);
