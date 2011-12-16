@@ -385,12 +385,12 @@
 	CGFloat avgRowHeight = height / rows;
 	CGFloat resultHeigh;
 	
-    if(height > screenRect.size.height)
-        if((UIDeviceOrientationPortrait == [UIDevice currentDevice].orientation)
-           || (UIDeviceOrientationPortraitUpsideDown == [UIDevice currentDevice].orientation))
-            resultHeigh = screenRect.size.height - _alertView.frame.size.height - 65;
+    if(height > screenRect.size.height) {
+        if(UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation))
+            resultHeigh = screenRect.size.height - _alertView.frame.size.height - 65.;
         else
-            resultHeigh = screenRect.size.width - _alertView.frame.size.height - 65;
+            resultHeigh = screenRect.size.width - _alertView.frame.size.height - 65.;
+    }
 	else if (_maximumVisibleRows == -1 || rows <= _maximumVisibleRows)
 		resultHeigh = _tableView.contentSize.height;
 	else
