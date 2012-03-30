@@ -273,9 +273,7 @@
 		[_alertView addSubview:_shadow];
 		[_alertView bringSubviewToFront:_shadow];
 		
-		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidChangeStatusBarOrientationNotification object:nil queue:nil usingBlock:^(NSNotification *n) {
-			dispatch_after(DISPATCH_TIME_NOW, dispatch_get_main_queue(), ^{[self layout];});
-		}];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(layoutAfterSomeTime) name:UIApplicationDidChangeStatusBarOrientationNotification object:nil];
 	}
 	
 	return self;
@@ -408,6 +406,10 @@
 															 _tableView.frame.origin.y,
 															 _tableView.frame.size.width,
 															 8)];
+}
+
+- (void)layoutAfterSomeTime{
+    [NSTimer scheduledTimerWithTimeInterval:0.0 target:self selector:@selector(layout) userInfo:nil repeats:NO];
 }
 
 #pragma mark -
