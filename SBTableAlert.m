@@ -292,6 +292,7 @@
 }
 
 - (void)dealloc {
+    _alertView.delegate = nil;
 	[self setTableView:nil];
 	[self setView:nil];
 	
